@@ -1,0 +1,184 @@
+package tictactoe;
+
+import java.util.Scanner;
+
+public class Main {
+
+    static final int SIZE = 3;
+    static final char X = 'X';
+    static final char O = 'O';
+    static final char EMPTY = ' ';
+
+    static Scanner sc = new Scanner(System.in);
+    static char [][] matrix = new char[SIZE][SIZE];
+
+
+    public static void main(String[] args) {
+
+        for(int i = 0; i < SIZE; i++)
+            for(int j = 0; j < SIZE; j++)
+                matrix[i][j] = ' ';
+
+        printBoard();
+        while (true){
+            playGame(X);
+            printBoard();
+            if(checkWin(X)) {
+                System.out.println("X wins");
+                break;
+            }
+            if(!hasEmpty()) {
+                System.out.println("Draw");
+                break;
+            }
+            playGame(O);
+            printBoard();
+            if(checkWin(O)) {
+                System.out.println("O wins");
+                break;
+            }
+            if(!hasEmpty()) {
+                System.out.println("Draw");
+                break;
+            }
+        }
+    }
+
+    static void printBoard(){
+        System.out.println("---------");
+
+        for(int i = 0; i < SIZE; i++) {
+            System.out.print("| ");
+            for (int j = 0; j < SIZE; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println("|");
+        }
+
+        System.out.println("---------");
+    }
+
+    static void playGame(char symbol){
+        int x, y;
+        boolean result = false;
+
+        while ((!result)) {
+            System.out.println("Enter the coordinates: ");
+            if (sc.hasNextInt()) {
+                x = sc.nextInt();
+                y = sc.nextInt();
+                if (checkNumber(x, y)) {
+                    if (isEmpty(x, y)) {
+                        if(symbol == O) {
+                            matrix[3 - y][x - 1] = O;
+                        }
+                        else {
+                            matrix[3 - y][x - 1] = X;
+                        }
+
+                        result = true;
+                    }
+                }
+            } else if (sc.hasNextLine()) {
+                System.out.println("You should enter numbers!");
+                sc.nextLine();
+            }
+        }
+    }
+
+    static boolean isEmpty(int x, int y){
+        boolean result = false;
+        if(matrix[3 - y][x - 1] == EMPTY) {
+            result = true;
+        } else
+            System.out.println("This cell is occupied! Choose another one!");
+
+        return result;
+    }
+
+    static boolean checkNumber(int x, int y){
+        boolean result = false;
+
+        if(x > 0 && x <= SIZE && y > 0 && y <= SIZE)
+            result = true;
+        else
+            System.out.println("Coordinates should be from 1 to 3!");
+
+        return result;
+    }
+
+    static boolean checkWin(char symbol){
+        boolean result = false;
+
+        if(checkDiagonals(symbol) || checkLines(symbol))
+            result = true;
+
+        return result;
+    }
+
+    static boolean checkLines(char symbol) {
+        boolean result = false;
+        boolean raw;
+        boolean column;
+
+        for(int i = 0; i < SIZE; i++) {
+            raw = true;
+            column = true;
+            for (int j = 0; j < SIZE; j++) {
+                if(raw && matrix[i][j] == symbol)
+                    raw = true;
+                else
+                    raw = false;
+
+                if(column && matrix[j][i] == symbol)
+                    column = true;
+                else
+                    column = false;
+            }
+            if (raw || column) {
+                result = true;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    static boolean checkDiagonals(char symbol) {
+        boolean result = false;
+        boolean leftRight = true;
+        boolean rightLeft = true;
+
+        for (int i = 0; i < SIZE; i++){
+            if(leftRight && matrix[i][i] == symbol)
+                leftRight = true;
+            else
+                leftRight = false;
+
+            if(rightLeft && matrix[i][SIZE - 1 - i] == symbol)
+                rightLeft = true;
+            else
+                rightLeft = false;
+        }
+
+        if(leftRight || rightLeft)
+            result = true;
+
+        return result;
+    }
+
+    static boolean hasEmpty(){
+        boolean result = false;
+        for (int i = 0; i < SIZE; i++){
+            for(int j = 0; j < SIZE; j++){
+                if (matrix[i][j] == EMPTY){
+                    result = true;
+                    break;
+                }
+            }
+            if(result)
+                break;
+        }
+        return result;
+    }
+}
